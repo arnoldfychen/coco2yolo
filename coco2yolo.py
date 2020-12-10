@@ -117,6 +117,7 @@ class COCO2YOLO:
                     box = ' '.join(box)
                     line = str(category_id) + ' ' + box
                     f.write(line + '\n')
+        
         #generate null label file for those images that have no bbox.
         for k, v in images_info.items():
            if k not in anno_dict:
