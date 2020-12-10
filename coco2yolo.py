@@ -102,10 +102,10 @@ class COCO2YOLO:
         print("converting done, total labels", len(anno_dict))
 
         print("saving txt file...")
-        self._save_txt(anno_dict)
+        self._save_txt(anno_dict,images_info)
         print("saving done")
 
-    def _save_txt(self, anno_dict):
+    def _save_txt(self, anno_dict,images_info):
         for k, v in anno_dict.items():
             file_name = v[0][0].split(".")[0] + ".txt"
             with open(os.path.join(output, file_name), 'w', encoding='utf-8') as f:
@@ -117,7 +117,12 @@ class COCO2YOLO:
                     box = ' '.join(box)
                     line = str(category_id) + ' ' + box
                     f.write(line + '\n')
-
+        #generate null label file for those images that have no bbox.
+        for k, v in images_info.items():
+           if k not in anno_dict:
+              file_name = v[0].split(".")[0] + ".txt"
+              with open(os.path.join(output, file_name), 'w', encoding='utf-8') as f:
+                 f.write('')
 
 if __name__ == '__main__':
     c2y = COCO2YOLO()
