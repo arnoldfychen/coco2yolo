@@ -1,18 +1,18 @@
+#encoding: utf-8
+
 import json
 import os
 
 # train
-json_file = "/home/user/datasets/coco/annotations/instances_train2017.json"
-output = "/home/user/datasets/coco/labels/train2017/"
+json_file = "/workspace/AB_darknet/data/coco/annotations/instances_train2017.json"
+output = "/workspace/AB_darknet/data/coco/labels/train2017/"
 
 
 # val
-# json_file = "/home/user/datasets/coco/annotations/instances_val2017.json"
-# output = "/home/user/datasets/coco/labels/val2017/"
+json_file = "/workspace/AB_darknet/data/coco/annotations/instances_val2017.json"
+output = "/workspace/AB_darknet/data/coco/labels/val2017/"
 
-"""
-将COCO instance数据集转为YOLO格式
-"""
+
 class COCO2YOLO:
     def __init__(self):
         self._check_file_and_dir(json_file, output)
@@ -46,11 +46,10 @@ class COCO2YOLO:
             w = image['width']
             h = image['height']
             images_info[id] = (file_name, w, h)
-
+        
         return images_info
 
     def _bbox_2_yolo(self, bbox, img_w, img_h):
-        # bbox矩形框, 左上角坐标 , 宽, 高
         x, y, w, h = bbox[0], bbox[1], bbox[2], bbox[3]
         centerx = bbox[0] + w / 2
         centery = bbox[1] + h / 2
@@ -118,13 +117,12 @@ class COCO2YOLO:
                     line = str(category_id) + ' ' + box
                     f.write(line + '\n')
         
-        #generate null label file for those images that have no bbox.
         for k, v in images_info.items():
            if k not in anno_dict:
               file_name = v[0].split(".")[0] + ".txt"
               with open(os.path.join(output, file_name), 'w', encoding='utf-8') as f:
                  f.write('')
-
+        
 if __name__ == '__main__':
     c2y = COCO2YOLO()
     c2y.coco2yolo()
